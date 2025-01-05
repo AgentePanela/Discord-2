@@ -16,7 +16,7 @@ export class ChatRoom extends Room<MyRoomState> {
   messages: message[] = [] //fuck schema
 
   onCreate (options: any) {
-    this.setState(new MyRoomState());
+    //this.setState(new MyRoomState());
     this.autoDispose = false;
     this.roomId = "ChatRoom"
 
@@ -45,12 +45,16 @@ export class ChatRoom extends Room<MyRoomState> {
   onJoin (client: Client, options: any) {
     console.log(options["username"], "joined!");
 
+    /*
     if(!options["username"]) {//kick client if theres no username
       client.leave(1001, "No username provided");
       console.log(`Kicking client ${client.sessionId}, reason: "No username provided".`);
-    }
+    }*/
 
     this.connectedClients[client.sessionId] = options;
+    if(!options["username"])
+      this.connectedClients[client.sessionId]["username"] = `User - ${Math.floor(Math.random() * 100)}`;
+
     client.send("messageLog", this.messages);
     this.broadcast("Broadcast", `${this.connectedClients[client.sessionId]["username"]} has joined!`);
   }
